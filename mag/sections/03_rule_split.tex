@@ -1,0 +1,75 @@
+\subsection{Переформулировка правил для увеличения производительности}
+\label{sec:optimization:data_repr:rule_split}
+
+Самый оптимальный способ выполнения правил – это тот, при котором в каждом предикате в теле правила является каким-либо префиксом головы правила.
+
+\begin{lstlisting}[language=Prolog]
+filtered_fcst[sku, store, week]=f <-
+  fcst[sku, store, week]=f,
+  filter(sku, store),
+  active(sku).
+
+filtered_fcst[sku, store, week]=f <-
+  fcst[sku, store, week]=f,
+  filter(sku, store),
+  future_week(week).
+\end{lstlisting}
+
+Также правильно использовать дельты для того, чтобы сузить количество охватываемой информации во время фильтрации. Если такого свойства нет, то система создает так называемые индексы чувствительности. Они материализуют записи из оригинальной операции объединения, чтобы запомнить регионы в голове предиката, которые можно «запаковать».
+
+Разберемся подробнее. Возьмем пример:
+
+\begin{lstlisting}[language=Prolog]
+short_sku_alert(promo, sku) <-
+  contains(promo, spot),
+  promotes(spot, sku),
+  starts_on[promo]=day,
+  projected_iventory_of[sku, day] < stock_threshold[].
+\end{lstlisting}
+
+Данное правило будет довольно трудоемким в плане выполнения, потому что нет переменной, по которой можно объединить каждый предикат в теле правила. Тогда какой же порядок ключей следует взять?
+
+Попробуем материализовать объединения предикатов, которые скорее всего не будут обрабатываться в качестве ответа на действия пользователя. Такие предикаты могут быть сохранены во время дневного скрипта и только единожды. Более того, если мы таким образом сможем избавиться от переменной, то время обработки запроса увеличится. Теперь нужно ответить на вопрос: какие объединения будут высчитаны один раз во время выполнения скрипта, основываясь на знании информации, которую содержат эти предикаты?
+
+Переформулируем наше правило:
+
+\begin{lstlisting}[language=Prolog]
+skus_on_promo(promo, sku) <-
+  contains(promo, spot),
+  promotes(spot, sku).
+
+short_sku_alert(promo, sku) <-
+  skus_on_promo(promo, sku),
+  starts_on[promo]=day,
+  projected_iventory_of[sku, day] < stock_threshold[].
+\end{lstlisting}
+
+\lstinline{skus_on_promo} теперь может быть изменено во время скрипта, при этом этот предикат убирает лишнюю переменную (\lstinline{spot}) из области видимости оптимизатора во время выполнения объединения. Неплохое начало!
+
+Теперь, попробуем увидеть «разреженные фильтры», то есть попробуем вынести в отдельный предикат те данные, фильтрация по которым скорее всего отсечет большое количество записей. Что из этого стоит выбрать?
+
+\begin{lstlisting}[language=Prolog]
+shortages(sku, day) <-
+  projected_iventory_of[sku, day] < stock_threshold[].
+
+short_sku_alert(promo, sku) <-
+  skus_on_promo(promo, sku),
+  starts_on[promo]=day,
+  shortages(sku, day).
+\end{lstlisting}
+
+Данная оптимизация не только отсекает большое количество информации при фильтрации, но и позволяет создать индекс чувствительности по \lstinline{(sku, day)} вместо \lstinline{(promo, sku, day)}.
+
+Но и это еще не все. Попробуем материализовать то объединение, которое применяет разреженный фильтр для удаления переменной из более большого объединения.
+
+\begin{lstlisting}[language=Prolog]
+skus_short_at_start(promo, sku) <-
+  starts_on[promo]=day,
+  shortages(sku, day).
+
+short_sku_alert(promo, sku) <-
+  skus_on_promo(promo, sku),
+  skus_short_at_start(promo, sku).
+\end{lstlisting}
+
+В итоговом варианте в теле правила используется лишь 2 предиката, у которых один и тот же порядок ключей, что дает выигрыш в производительности примерно в 10 раз.

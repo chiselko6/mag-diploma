@@ -1,0 +1,44 @@
+\subsection{Принужденное изменение порядка ключей}
+\label{sec:optimization:key_ordering}
+
+Чтобы помочь системе правильно использовать индексы, можно подсказывать ей и изменять порядок используемых ключей. Для этого используем пример:
+
+\begin{lstlisting}[language=Prolog]
+filtered_fcst[sku, store, week]=f <-
+  forecast[sku, store, week]=f,
+  filter(sku, store),
+  fcst_horizon(week).
+\end{lstlisting}
+
+И наложим ограничения (для примера):
+
+\begin{itemize}
+  \item \lstinline{fcst_horizon} содержит 52 записи (текущая неделя и на год вперед);
+  \item \lstinline{filter} содержит 100.000 записей, но довольно разрежен по параметру \lstinline{sku};
+  \item оптимизатор выберет порядок ключей как \lstinline{(week, sku, store)}. Заранее скажем, что это плохой выбор порядка ключей, так как кроме построения индекса, \lstinline{filter} по факту не сделает большой работы по самой фильтрации.
+\end{itemize}
+
+Итак, исходя из некоторых соображений (возможно, мы знаем, как предикаты могут фильтровать друг друга, или мы хотим не давать системе создавать большой индекс), мы создаем прагму:
+
+\begin{lstlisting}[language=Prolog]
+pragma_force_key_ordering(sk, st, wk) ->
+  sku(sk), loc(st), week(wk).
+\end{lstlisting}
+
+Теперь мы можем использовать данную прагму в нашем правиле:
+
+\begin{lstlisting}[language=Prolog]
+fcst_in_range[sku, store, week] = f <-
+  pragma_force_key_ordering(sku, store, week),
+  fcst[sku, store, week]=f,
+  filter(sku, store),
+  future_week(week).
+\end{lstlisting}
+
+Как ни странно, но широкое использование прагм может привести к ухудшению ситуации:
+
+\begin{itemize}
+  \item все-таки это ограничение на оптимизатор, и в большинстве случаев оптимизатор использует более правильный подход;
+  \item следует избегать при существовании другого решения;
+  \item обычно стоит переформулировать правило и использовать новый материализованный предикат вместо изменения порядка ключей.
+\end{itemize}
