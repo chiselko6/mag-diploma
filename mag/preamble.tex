@@ -103,6 +103,7 @@
 \makeatletter
 \renewcommand{\l@section}{\@dottedtocline{1}{0.5em}{1.2em}}
 \renewcommand{\l@subsection}{\@dottedtocline{2}{1.7em}{2.0em}}
+\renewcommand{\l@subsubsection}{\@dottedtocline{3}{3.8em}{2.7em}}
 \makeatother
 
 % Зачем: убираем переносы в содержании
@@ -159,16 +160,6 @@
     {1em \@plus .2ex}%
     {\raggedright\hyphenpenalty=10000\normalfont\normalsize\bfseries}}
 \makeatother
-% Полужирным и номер, и текст заголовка (если ваша кафедра не ПОИТ)
-% \makeatletter
-% \renewcommand\subsection{%
-  % \@startsection{subsection}{2}%
-    % {\fivecharsapprox}%
-    % {-1em \@plus -1ex \@minus -.2ex}%
-    % {1em \@plus .2ex}%
-    % {\raggedright\hyphenpenalty=10000\normalfont\normalsize\bfseries}}
-% \makeatother
-
 
 % Зачем: Задает стиль заголовков пунктов
 % Почему: Пункты 2.1.1, 2.2.5 и ПРИЛОЖЕНИЕ Л Требований по оформлению пояснительной записки.
