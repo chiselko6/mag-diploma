@@ -1,0 +1,66 @@
+\newpage
+\begin{center}
+\textbf{
+\MakeUppercase{Приложение B}\\
+\logiql синтаксис}
+\end{center}
+\addcontentsline{toc}{section}{Приложение B. \logiql синтаксис}
+
+Предикаты:
+
+\begin{lstlisting}[language=Prolog]
+sales_u(product, store, day, unit) -> string(product), string(store), datetime(day), int(unit).
+
+returns_u(product, store, day, units) -> string(product), string(store), datetime(day), int(units).
+
+multivalued_predicate(key; value1, value2) -> string(key), int(value1), int(value2).
+\end{lstlisting}
+
+Правила:
+
+\begin{lstlisting}[language=Prolog]
+netsales_u(product, store, day, net) <-
+  sales_u(product, store, day, sls),
+  returns_u(product, store, day, returns),
+  net = sls - returns.
+
+profit[x] = value <- revenue[x] - cost[x] = value.
+
++cost(x) <- +new_promo(x).
+
+_(product , tunits) <-
+  agg << tunits=total(untis) >>
+    sales_u(product , _, _, units).
+
+
+\end{lstlisting}
+
+Ограничения:
+
+\begin{lstlisting}
+sales_u[product, store, day] = unit -> product_catalog(product).
+
+returns_u[product, store, day] = ret,
+sales_u[product, store, day] = sls ->
+  ret <= sls.
+\end{lstlisting}
+
+Пример раскраски графа:
+
+\begin{lstlisting}
+node(n), node_id(n:uuid) -> string(uuid).
+color(c), color(c:color_name) -> string(color_name).
+edge(u, v) -> node(u), node(v).
+color_of[n] = c -> node(n), color(c).
+node(n) -> color_of[n] = _.
+edge(x, y), color_of[x] = c, color_of[y] = c -> x = y.
+\end{lstlisting}
+
+Триггеры:
+
+\begin{lstlisting}
+^sales_u[product, store  day] = new_units <-
+  +sales_line[_, product, store, day] = line_untis,
+  sales_u@prev[product, store, day] = units,
+  new_units = line_units + units.
+\end{lstlisting}

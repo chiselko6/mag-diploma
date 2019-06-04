@@ -1,0 +1,57 @@
+\begin{center}
+\textbf{
+\MakeUppercase{Приложение А}\\
+TDX сервис}
+\end{center}
+\addcontentsline{toc}{section}{Приложение А. TDX сервис}
+
+\begin{lstlisting}[language=Prolog]
+sku(x), sku_id(x:s) -> string(s).
+store(x), store_id(x:s) -> string(s). week(x), week_id(x:s) -> string(s).
+
+sales[x, y, z] = v -> sku(x), store(y), week(z), int( v).
+
+block(`files) {
+  alias_all(`lb:web:delim:schema),
+  alias_all(`lb:web:delim:schema_abbr),
+  alias_all(`lb:web:delim:binding),
+  alias_all(`lb:web:delim:binding_abbr),
+
+  clauses(`{
+
+    file_definition_by_name["sales"] = fd, file_definition(fd) {
+      file_delimiter[] = "|",
+      column_headers[] = "SKU,STORE,WEEK,SALES",
+      column_formats[] = "alphanum,alphanum,alphanum, integer"
+    }.
+
+  }),
+
+  clauses(`{
+
+    file_binding_by_name["sales"] = fb,
+    file_binding(fb) {
+      file_binding_definition_name[] = "sales",
+      predicate_binding_by_name["measure:sales"] = predicate_binding(_) {
+        predicate_binding_columns[] = "SKU,STORE, WEEK,SALES"
+      }
+    }.
+
+  })
+
+} <-- .
+
+
+block(`service_config) {
+  alias_all(`lb:web:config:service),
+  alias_all(`lb:web:config:service_abbr),
+  alias_all(`lb:web:config:delim),
+
+  clauses(`{
+    service_by_prefix["/sales"] = x, delim_service(x) {
+      delim_file_binding[] = "sales"
+    }.
+  })
+
+} <-- .
+\end{lstlisting}
