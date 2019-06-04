@@ -8,7 +8,11 @@ filtered_fcst[sku, store, week]=f <-
   fcst[sku, store, week]=f,
   filter(sku, store),
   active(sku).
+\end{lstlisting}
 
+Но не:
+
+\begin{lstlisting}[language=Prolog]
 filtered_fcst[sku, store, week]=f <-
   fcst[sku, store, week]=f,
   filter(sku, store),

@@ -22,7 +22,8 @@
 Тестовые пакеты пишутся на языке \js. Пример описания теста \lstinline{resultByProduct}, в котором выполняется очень большой по объему возвращаемых данных, представлен ниже:
 
 \begin{lstlisting}[language=Javascript]
-var config = require('./config'); lamias
+var config = require('./config');
+lamias
     .add(Suite('resultByProduct')
         .after(config.clear_adjustments())
         .level('Location', 'store')
