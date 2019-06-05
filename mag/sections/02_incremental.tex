@@ -5,7 +5,7 @@
 
 \begin{enumerate}
   \item dataflow graph (граф потока данных);
-  \item incremental view maintenance (поэтапное поддержание представлений)
+  \item incremental view maintenance (поэтапное поддержание представлений).
 \end{enumerate}
 
 Идея \emph{dataflow graph} (рисунок \ref{fig:technology:data_to_computation:dataflow_graph}) была использована в 1980-90 гг. в оптимизации компиляторов. Представление программы в виде такого графа вместо ее императивной структуры (сверху-вниз и слева-направо) позволяет автоматически ее параллелить. Например, для простой программы следующего вида можно составить граф, представленный на рисунке \ref{fig:technology:data_to_computation:dataflow_graph_parallel}, на котором также можно выделены операции, которые можно запустить параллельно (разные ветви графа):

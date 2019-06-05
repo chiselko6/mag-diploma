@@ -1,0 +1,72 @@
+\newpage
+\begin{flushright}
+\textbf{\MakeUppercase{Приложение D}}
+\end{flushright}
+\begin{center}
+\textbf{\MakeUppercase{Примеры исходного кода для оптимизации}}
+\end{center}
+\addcontentsline{toc}{section}{Приложение D. Примеры оптимизации}
+
+\begin{lstlisting}[language=Prolog]
+block(`opt_model){
+
+  clauses(`{
+
+    below_fair_share_lost_sales[bound, group] = v -> ar:onet:opt_by:group(group), float(v), ar:onet:bound:bound(bound).
+
+  }),
+
+  clauses(`{
+
+    problem_lte_fair_share_bound(p, bound)  <-  net:soft_lte_fair_share(bound), ar:opt_model:problem_bound(p, bound).
+
+    problem_soft_lte_fair_share_bound_id(p, id) <- net:soft_lte_fair_share(bound), ar:opt_model:problem_bound(p, bound), ar:onet:bound:bound_id[bound] = id.
+    below_fair_share_lost_sales_seq[p, v] = id -> ar:opt_model:problem(p), int(v), int(id).
+    below_fair_share_lost_sales_seq[p, v] = id <- seq << >> problem_soft_lte_fair_share_bound_id(p, id).
+    below_fair_share_lost_sales_card[p] = v <- agg << v = count() >> below_fair_share_lost_sales_seq[p, _] = _.
+
+
+    fair_share_target[p, bound_idx] = target,
+    fair_share_idx2c_idx[p, bound_idx] = v,
+    variable_idx_below_fair_share_lost_sales[p, bound] = v <-
+      v = start_idx + bound_idx,
+      below_fair_share_lost_sales_seq[p, bound_idx] = ar:onet:bound:bound_id[bound],
+      ar:onet:bound:value[bound] = target,
+      start_idx = ar:opt_model:end_variable_idx_below_display_stock[p].
+
+    ar:opt_model:solver_matrix_0[p, r_idx, below_fair_share_c_idx] = 1.0f,
+    ar:opt_model:solver_matrix_0[p, r_idx, arc_c_idx] = 1.0f,
+    ar:opt_model:row_lower_bounds_0[p, r_idx] = target,
+    ar:opt_model:row_sense[p,r_idx] =  "GE",
+    ar:opt_model:solver_objective_0[p, below_fair_share_c_idx] = net:above_fair_share_penalty_default[]
+      <-
+      int:range(
+        ar:opt_model:row_constraint_start_below_fair_share_definition[p],
+        ar:opt_model:row_constraint_end_below_fair_share_definition[p],
+        1,
+        r_idx
+      ),
+      bound_idx = r_idx - ar:opt_model:row_constraint_start_below_fair_share_definition[p],
+      fair_share_target[p, bound_idx] = target,
+      fair_share_idx2c_idx[p, bound_idx] = below_fair_share_c_idx,
+      soft_lte_fair_share_bound_arc_var_idx(below_fair_share_c_idx, arc_c_idx).
+
+    soft_lte_fair_share_bound_arc_var_idx(c_idx, a_idx) <-
+      variable_idx_below_fair_share_lost_sales[p, bound] = c_idx,
+      ar:onet:bound:arc_in_bound(a,bound),
+      ar:opt_model:variable_idx_arc_flow[p,a]= a_idx.
+
+  }),
+
+  clauses(`{
+
+    below_fair_share_lost_sales[bound,group]=v <-
+      ar:opt_model:group_to_problem[group] = p,
+      variable_idx_below_fair_share_lost_sales[p, bound] = c_idx,
+      v = ar:opt_model:solution_0[p, c_idx].
+
+  })
+
+} <--.
+
+\end{lstlisting}

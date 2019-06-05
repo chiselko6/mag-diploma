@@ -1,8 +1,9 @@
 \newpage
+\begin{flushright}
+\textbf{\MakeUppercase{Приложение B}}
+\end{flushright}
 \begin{center}
-\textbf{
-\MakeUppercase{Приложение B}\\
-\logiql синтаксис}
+\textbf{\MakeUppercase{\logiql синтаксис}}
 \end{center}
 \addcontentsline{toc}{section}{Приложение B. \logiql синтаксис}
 
@@ -37,7 +38,7 @@ _(product , tunits) <-
 
 Ограничения:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 sales_u[product, store, day] = unit -> product_catalog(product).
 
 returns_u[product, store, day] = ret,
@@ -47,7 +48,7 @@ sales_u[product, store, day] = sls ->
 
 Пример раскраски графа:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 node(n), node_id(n:uuid) -> string(uuid).
 color(c), color(c:color_name) -> string(color_name).
 edge(u, v) -> node(u), node(v).
@@ -58,7 +59,7 @@ edge(x, y), color_of[x] = c, color_of[y] = c -> x = y.
 
 Триггеры:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 ^sales_u[product, store  day] = new_units <-
   +sales_line[_, product, store, day] = line_untis,
   sales_u@prev[product, store, day] = units,

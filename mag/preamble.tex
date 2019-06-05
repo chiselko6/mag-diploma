@@ -120,7 +120,7 @@
 % Зачем: Нумерация страниц располагается справа снизу страницы
 % Почему: Пункт 2.2.8 Требований по оформлению пояснительной записки.
 \fancyhf{} % очистка текущих значений
-\fancyfoot[R]{\thepage} % установка верхнего колонтитула
+\fancyfoot[C]{\thepage} % установка верхнего колонтитула
 \renewcommand{\footrulewidth}{0pt} % убрать разделительную линию внизу страницы
 \renewcommand{\headrulewidth}{0pt} % убрать разделительную линию вверху страницы
 \fancypagestyle{plain}{
@@ -335,7 +335,6 @@
 % Зачем: Включение номера раздела в номер рисунка. Нумерация рисунков внутри раздела.
 \AtBeginDocument{\numberwithin{figure}{section}}
 
-
 % Зачем: Дополнительные возможности в форматировании таблиц
 \usepackage{makecell}
 \usepackage{multirow}
@@ -528,8 +527,8 @@
 \makeatother
 
 \pretocmd{\section}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
-\pretocmd{\subsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
-\pretocmd{\subsubsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
+% \pretocmd{\subsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
+% \pretocmd{\subsubsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
 \pretocmd{\section}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
 \pretocmd{\subsection}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
 \pretocmd{\subsubsection}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}

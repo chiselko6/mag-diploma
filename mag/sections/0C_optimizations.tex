@@ -1,14 +1,15 @@
 \newpage
+\begin{flushright}
+\textbf{\MakeUppercase{Приложение C}}
+\end{flushright}
 \begin{center}
-\textbf{
-\MakeUppercase{Приложение C}\\
-Примеры оптимизации}
+\textbf{\MakeUppercase{Примеры оптимизации}}
 \end{center}
 \addcontentsline{toc}{section}{Приложение C. Примеры оптимизации}
 
 Переупорядочивание ключей:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 fcst_in_range[sku, store, week] = f <-
   fcst[sku, store, week]=f,
   future_week(week).
@@ -22,7 +23,7 @@ fcst_in_range[sku, store, week] = f <-
 
 Фиксирование порядка ключей:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 fcst_in_range[sku, store, week] = f <-
   pragma_force_key_ordering(sku, store, week),
   fcst[sku, store, week]=f,
@@ -34,7 +35,7 @@ binds_pred["pragma_force_key_ordering"]="SKU,STORE, WEEK".
 
 Переформулировка правил (как должно быть):
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 filtered_fcst[sku, store, week] = f <-
   fcst[sku, store, week]=f,
   filter(sku, store),
@@ -43,7 +44,7 @@ filtered_fcst[sku, store, week] = f <-
 
 Переформулировка правил (как плохо делать):
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 filtered_fcst[sku, store, week] = f <-
   fcst[sku, store, week] = f,
   filter(sku, store),
@@ -52,7 +53,7 @@ filtered_fcst[sku, store, week] = f <-
 
 Переформулировка правил (пример). Было:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 short_sku_alert(promo, sku) <-
   contains(promo, spot),
   promotes(spot, sku),
@@ -62,7 +63,7 @@ short_sku_alert(promo, sku) <-
 
 Стало:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Prolog]
 skus_short_at_start(promo, sku) <-
   starts_on[promo]=day,
   shortages(sku, day).
