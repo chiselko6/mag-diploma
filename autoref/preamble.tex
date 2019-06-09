@@ -120,12 +120,13 @@
 % Зачем: Нумерация страниц располагается справа снизу страницы
 % Почему: Пункт 2.2.8 Требований по оформлению пояснительной записки.
 \fancyhf{} % очистка текущих значений
-\fancyfoot[R]{\thepage} % установка верхнего колонтитула
+\fancyfoot[C]{\thepage} % установка верхнего колонтитула
 \renewcommand{\footrulewidth}{0pt} % убрать разделительную линию внизу страницы
 \renewcommand{\headrulewidth}{0pt} % убрать разделительную линию вверху страницы
 \fancypagestyle{plain}{
     \fancyhf{}
-    \rfoot{\thepage}}
+    \fancyfoot[C]{\thepage}
+}
 \setlength{\footskip}{6mm}
 
 
@@ -223,7 +224,7 @@
 
 % Зачем: Задание подписей, разделителя и нумерации частей рисунков
 % Почему: Пункт 2.5.5 Требований по оформлению пояснительной записки.
-\DeclareCaptionLabelFormat{stbfigure}{Рисунок}
+\DeclareCaptionLabelFormat{stbfigure}{Рисунок #2}
 \DeclareCaptionLabelFormat{stbsubfigure}{#2}
 \DeclareCaptionLabelFormat{stbtable}{ Таблица #2}
 \DeclareCaptionLabelSeparator{stb}{~--~}
@@ -327,14 +328,13 @@
 \setlist[enumerate,3]{itemindent=\parindent + \parindent - 2.7ex}
 
 % Зачем: Включение номера раздела в номер формулы. Нумерация формул внутри раздела.
-\AtBeginDocument{\numberwithin{equation}{section}}
+% \AtBeginDocument{\numberwithin{equation}{section}}
 
 % Зачем: Включение номера раздела в номер таблицы. Нумерация таблиц внутри раздела.
-\AtBeginDocument{\numberwithin{table}{section}}
+% \AtBeginDocument{\numberwithin{table}{section}}
 
 % Зачем: Включение номера раздела в номер рисунка. Нумерация рисунков внутри раздела.
-\AtBeginDocument{\numberwithin{figure}{section}}
-
+% \AtBeginDocument{\numberwithin{figure}{section}}
 
 % Зачем: Дополнительные возможности в форматировании таблиц
 \usepackage{makecell}
@@ -527,16 +527,16 @@
 }
 \makeatother
 
-\pretocmd{\section}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
-\pretocmd{\subsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
-\pretocmd{\subsubsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
-\pretocmd{\section}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
-\pretocmd{\subsection}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
-\pretocmd{\subsubsection}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
-\pretocmd{\section}{\addtocounter{totequation}{\value{equation}}\setcounter{equation}{0}}{}{}
-\pretocmd{\subsection}{\addtocounter{totequation}{\value{equation}}\setcounter{equation}{0}}{}{}
-\pretocmd{\subsubsection}{\addtocounter{totequation}{\value{equation}}\setcounter{equation}{0}}{}{}
-\pretocmd{\bibitem}{\addtocounter{totreferences}{1}}{}{}
+% \pretocmd{\section}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
+% \pretocmd{\subsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
+% \pretocmd{\subsubsection}{\addtocounter{totfigures}{\value{figure}}\setcounter{figure}{0}}{}{}
+% \pretocmd{\section}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
+% \pretocmd{\subsection}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
+% \pretocmd{\subsubsection}{\addtocounter{tottables}{\value{table}}\setcounter{table}{0}}{}{}
+% \pretocmd{\section}{\addtocounter{totequation}{\value{equation}}\setcounter{equation}{0}}{}{}
+% \pretocmd{\subsection}{\addtocounter{totequation}{\value{equation}}\setcounter{equation}{0}}{}{}
+% \pretocmd{\subsubsection}{\addtocounter{totequation}{\value{equation}}\setcounter{equation}{0}}{}{}
+% \pretocmd{\bibitem}{\addtocounter{totreferences}{1}}{}{}
 
 % Для оформления таблиц, не влазящих на 1 страницу
 \usepackage{longtable}
